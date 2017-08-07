@@ -14,7 +14,7 @@ class EventsController extends Controller
             'lng' => 'required'
         ]);
 
-        $results = Event::search($request->lat, $request->lng);
+        $results = Event::randomEvent($request->lat, $request->lng);
         dd($results);
 
         return Event::search($request->lat, $request->lng);
