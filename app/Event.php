@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 class Event extends Model
 {
-    public static function search($lat, $lng, $dist=15)
+    public static function search($lat, $lng, $dist=50000)
     {
         $locations = static::getLocations($lat, $lng, $dist);
 
