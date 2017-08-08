@@ -1,7 +1,10 @@
 <template>
     <div class="container">
-        <div class="row" v-if="showEvent && !!event">
+        <div class="row" v-if="showEvent && !!event && !searching">
             <div class="col-md-8 col-md-offset-2">
+                <a v-on:click="showMap()" class="pull-left">
+                    <span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-map-marker"></span>
+                </a>
                 <div class="event card">
                     <!--<img class="card-img-top" src="..." alt="Card image cap">-->
                     <div class="card-block">
@@ -26,10 +29,10 @@
                 </div>
             </div>
         </div>
-        <div class="row" v-if="!showEvent">
+        <div class="row" v-if="!showEvent && !searching">
             <div class="col-md-8 col-md-offset-2">
                 <div class="form-group">
-                    <gmap-autocomplete @place_changed="setPlace" :selectFirstOnEnter="true" class="form-control">
+                    <gmap-autocomplete @place_changed="setPlace" :selectFirstOnEnter="true" class="form-control autocomplete">
                     </gmap-autocomplete>
                 </div>
                 <gmap-map
@@ -44,8 +47,22 @@
             <div class="col-md-8 col-md-offset-2" style="padding-top:20px">
                 <div class="form-inline">
                     <div class="form-group">
-                        <input type="button" class="btn btn-lg btn-primary" value="Roll" v-on:click="search">
+                        <input type="button" class="btn btn-lg btn-primary" value="Roll" v-on:click="search" id="roll-button">
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" v-if="searching">
+            <div class="col-md-8 col-md-offset-2">
+                <div id="floatingCirclesG">
+                    <div class="f_circleG" id="frotateG_01"></div>
+                    <div class="f_circleG" id="frotateG_02"></div>
+                    <div class="f_circleG" id="frotateG_03"></div>
+                    <div class="f_circleG" id="frotateG_04"></div>
+                    <div class="f_circleG" id="frotateG_05"></div>
+                    <div class="f_circleG" id="frotateG_06"></div>
+                    <div class="f_circleG" id="frotateG_07"></div>
+                    <div class="f_circleG" id="frotateG_08"></div>
                 </div>
             </div>
         </div>
@@ -74,11 +91,14 @@
                 center,
                 marker,
                 event: {},
+                searching: false,
                 showEvent: false
             };
         },
 
         mounted() {
+            $('input.autocomplete').focus();
+
             if (!navigator.geolocation)
                 return;
 
@@ -96,11 +116,13 @@
             search() {
                 const {lat, lng} = this.marker;
 
+                this.searching = true;
+
                 axios.get('/events/search', {
                     params: {
                         lat,
                         lng,
-                        date:  moment().format()
+                        date: moment().format()
                     }
                 })
                     .then((response) => {
@@ -109,11 +131,15 @@
                         const event = response.data;
                         this.event = event;
 
+                        this.searching = false;
                         console.log(event);
 
                         this.$set(this.event, 'startTime', moment(event.startTime));
                         if (event.endTime)
                             this.$set(this.event, 'endTime', moment(event.endTime));
+                    })
+                    .catch((error) => {
+                        this.searching = false;
                     });
             },
 
@@ -124,6 +150,11 @@
                 this.$set(this.center, 'lng', lng);
                 this.$set(this.marker, 'lat', lat);
                 this.$set(this.marker, 'lng', lng);
+                $('#roll-button').focus();
+            },
+
+            showMap() {
+                this.showEvent = false;
             }
         }
     }

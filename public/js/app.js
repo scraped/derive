@@ -59427,6 +59427,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -59449,11 +59466,14 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
             center: center,
             marker: marker,
             event: {},
+            searching: false,
             showEvent: false
         };
     },
     mounted: function mounted() {
         var _this = this;
+
+        $('input.autocomplete').focus();
 
         if (!navigator.geolocation) return;
 
@@ -59476,6 +59496,8 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
                 lng = _marker.lng;
 
 
+            this.searching = true;
+
             axios.get('/events/search', {
                 params: {
                     lat: lat,
@@ -59488,10 +59510,13 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
                 var event = response.data;
                 _this2.event = event;
 
+                _this2.searching = false;
                 console.log(event);
 
                 _this2.$set(_this2.event, 'startTime', moment(event.startTime));
                 if (event.endTime) _this2.$set(_this2.event, 'endTime', moment(event.endTime));
+            }).catch(function (error) {
+                _this2.searching = false;
             });
         },
         setPlace: function setPlace(place) {
@@ -59501,6 +59526,10 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
             this.$set(this.center, 'lng', lng);
             this.$set(this.marker, 'lat', lat);
             this.$set(this.marker, 'lng', lng);
+            $('#roll-button').focus();
+        },
+        showMap: function showMap() {
+            this.showEvent = false;
         }
     }
 });
@@ -65270,11 +65299,22 @@ webpackContext.id = 272;
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "container"
-  }, [(_vm.showEvent && !!_vm.event) ? _c('div', {
+  }, [(_vm.showEvent && !!_vm.event && !_vm.searching) ? _c('div', {
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-8 col-md-offset-2"
-  }, [_c('div', {
+  }, [_c('a', {
+    staticClass: "pull-left",
+    on: {
+      "click": function($event) {
+        _vm.showMap()
+      }
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-chevron-left"
+  }), _c('span', {
+    staticClass: "glyphicon glyphicon-map-marker"
+  })]), _vm._v(" "), _c('div', {
     staticClass: "event card"
   }, [_c('div', {
     staticClass: "card-block"
@@ -65299,14 +65339,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.search
     }
-  })])])])]) : _vm._e(), _vm._v(" "), (!_vm.showEvent) ? _c('div', {
+  })])])])]) : _vm._e(), _vm._v(" "), (!_vm.showEvent && !_vm.searching) ? _c('div', {
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-8 col-md-offset-2"
   }, [_c('div', {
     staticClass: "form-group"
   }, [_c('gmap-autocomplete', {
-    staticClass: "form-control",
+    staticClass: "form-control autocomplete",
     attrs: {
       "selectFirstOnEnter": true
     },
@@ -65341,13 +65381,64 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "btn btn-lg btn-primary",
     attrs: {
       "type": "button",
-      "value": "Roll"
+      "value": "Roll",
+      "id": "roll-button"
     },
     on: {
       "click": _vm.search
     }
-  })])])])]) : _vm._e()])
-},staticRenderFns: []}
+  })])])])]) : _vm._e(), _vm._v(" "), (_vm.searching) ? _c('div', {
+    staticClass: "row"
+  }, [_vm._m(0)]) : _vm._e()])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "col-md-8 col-md-offset-2"
+  }, [_c('div', {
+    attrs: {
+      "id": "floatingCirclesG"
+    }
+  }, [_c('div', {
+    staticClass: "f_circleG",
+    attrs: {
+      "id": "frotateG_01"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "f_circleG",
+    attrs: {
+      "id": "frotateG_02"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "f_circleG",
+    attrs: {
+      "id": "frotateG_03"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "f_circleG",
+    attrs: {
+      "id": "frotateG_04"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "f_circleG",
+    attrs: {
+      "id": "frotateG_05"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "f_circleG",
+    attrs: {
+      "id": "frotateG_06"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "f_circleG",
+    attrs: {
+      "id": "frotateG_07"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "f_circleG",
+    attrs: {
+      "id": "frotateG_08"
+    }
+  })])])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
