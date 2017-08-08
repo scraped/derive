@@ -2,9 +2,9 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use GuzzleHttp;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
 class Event
@@ -27,13 +27,13 @@ class Event
         $this->endTime = isset($attributes->end_time) ? $attributes->end_time : null;
     }
 
-    public static function randomEvent($lat, $lng, $dist=50000)
+    public static function randomEvent($lat, $lng, $dist, $dateTime)
     {
-        $events = static::search($lat, $lng, $dist);
+        $events = static::search($lat, $lng, $dist, $dateTime);
         return $events[array_rand($events)];
     }
 
-    public static function search($lat, $lng, $dist=50000)
+    public static function search($lat, $lng, $dist, $dateTime)
     {
         $locations = static::getLocations($lat, $lng, $dist);
 
@@ -53,6 +53,21 @@ class Event
                 array_push($events, new Event($event));
             }
         }
+
+        $dateTime = (new Carbon($dateTime))->addHours(1);
+
+        // Filter events by date
+        $events = collect($events)
+            ->filter(function($item) use ($dateTime) {
+                $beginTime = new Carbon($item->startTime);
+                $endTime = isset($item->endTime) ? new Carbon($item->endTime) : null;
+
+                if (!$endTime)
+                    return $dateTime->gt($beginTime) && $dateTime->lt($beginTime->addDays(2));
+
+                return $dateTime->gt($beginTime) && $dateTime->lt($endTime->addDays(1));
+            })
+            ->toArray();
 
         return $events;
     }
