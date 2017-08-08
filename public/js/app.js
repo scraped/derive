@@ -59486,11 +59486,12 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
                 _this2.showEvent = true;
 
                 var event = response.data;
+                _this2.event = event;
 
-                _this2.event = response.data;
+                console.log(event);
+
                 _this2.$set(_this2.event, 'startTime', moment(event.startTime));
                 if (event.endTime) _this2.$set(_this2.event, 'endTime', moment(event.endTime));
-                //{"id":"106688233357249","type":"public","name":"Acoustic Happy Hour with Lindsey Vogt","description":"Live Music Presented by AZ Chicks with Picks.\n\n$4 Local Huss Brewery Pints\n\n$4 House Wines\n\n$4 Cocktail of the Day\n\n1\/2 Priced Appetizers (excluding Jumbo Combo)","startTime":"2017-08-03T16:00:00-0700","endTime":"2017-08-13T19:00:00-0700","place":null,"requested_date":"2017-08-08T01:08:19-04:00"}
             });
         },
         setPlace: function setPlace(place) {
@@ -65273,34 +65274,32 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-8 col-md-offset-2"
-  }, [_c('ul', {
-    staticClass: "event-list"
-  }, [_c('li', [_c('time', {
-    attrs: {
-      "datetime": "2014-07-20"
-    }
-  }, [_c('span', {
-    staticClass: "day"
-  }, [_vm._v(_vm._s(_vm.event.startTime.date()))]), _vm._v(" "), _c('span', {
-    staticClass: "month"
-  }, [_vm._v(_vm._s(_vm.event.startTime.format('MMM')))]), _vm._v(" "), _c('span', {
-    staticClass: "year"
-  }, [_vm._v(_vm._s(_vm.event.startTime.year()))]), _vm._v(" "), _c('span', {
-    staticClass: "time"
-  }, [_vm._v("ALL DAY")])]), _vm._v(" "), _c('div', {
-    staticClass: "info"
-  }, [_c('h2', {
-    staticClass: "title"
-  }, [_vm._v(_vm._s(_vm.event.name))]), _vm._v(" "), _c('span', [_vm._v(_vm._s(_vm.event.startTime))])])]), _vm._v(" "), _c('li', {
-    staticClass: "event-details"
   }, [_c('div', {
-    staticClass: "info",
-    staticStyle: {
-      "height": "auto"
+    staticClass: "event card"
+  }, [_c('div', {
+    staticClass: "card-block"
+  }, [_c('h1', {
+    staticClass: "card-title"
+  }, [_vm._v(_vm._s(_vm.event.name))]), _vm._v(" "), _c('h2', {
+    staticClass: "card-text"
+  }, [_vm._v("\n                        " + _vm._s(_vm.event.startTime.calendar()) + "\n                        "), (_vm.event.endTime) ? _c('span', [_vm._v(" until " + _vm._s(_vm.event.endTime.calendar()))]) : _vm._e()]), _vm._v(" "), (_vm.event.place) ? _c('div', {
+    staticClass: "card-text address"
+  }, [_c('h3', [_vm._v(_vm._s(_vm.event.place.name))]), _vm._v("\n                        " + _vm._s(_vm.event.place.location.street) + "\n                        "), _c('br'), _vm._v("\n                        " + _vm._s(_vm.event.place.location.city) + ", " + _vm._s(_vm.event.place.location.state) + " " + _vm._s(_vm.event.place.location.zip) + "\n                    ")]) : _vm._e(), _vm._v(" "), _c('p', {
+    staticClass: "card-text"
+  }, [_vm._v(_vm._s(_vm.event.description))])])]), _vm._v(" "), _c('div', {
+    staticClass: "form-inline"
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('input', {
+    staticClass: "btn btn-lg btn-primary",
+    attrs: {
+      "type": "button",
+      "value": "Reroll"
+    },
+    on: {
+      "click": _vm.search
     }
-  }, [_c('p', {
-    staticClass: "desc"
-  }, [_vm._v("\n                            " + _vm._s(_vm.event.description) + "\n                        ")])])])])])]) : _vm._e(), _vm._v(" "), (!_vm.showEvent) ? _c('div', {
+  })])])])]) : _vm._e(), _vm._v(" "), (!_vm.showEvent) ? _c('div', {
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-8 col-md-offset-2"

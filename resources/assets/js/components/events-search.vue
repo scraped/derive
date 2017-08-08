@@ -2,28 +2,28 @@
     <div class="container">
         <div class="row" v-if="showEvent && !!event">
             <div class="col-md-8 col-md-offset-2">
-                <ul class="event-list">
-                    <li>
-                        <time datetime="2014-07-20">
-                            <span class="day">{{ event.startTime.date() }}</span>
-                            <span class="month">{{ event.startTime.format('MMM') }}</span>
-                            <span class="year">{{ event.startTime.year() }}</span>
-                            <span class="time">ALL DAY</span>
-                        </time>
-
-                        <div class="info">
-                            <h2 class="title">{{ event.name }}</h2>
-                            <span>{{ event.startTime }}</span>
+                <div class="event card">
+                    <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+                    <div class="card-block">
+                        <h1 class="card-title">{{ event.name }}</h1>
+                        <h2 class="card-text">
+                            {{ event.startTime.calendar() }}
+                            <span v-if="event.endTime"> until {{ event.endTime.calendar() }}</span>
+                        </h2>
+                        <div class="card-text address" v-if="event.place">
+                            <h3>{{ event.place.name }}</h3>
+                            {{ event.place.location.street }}
+                            <br>
+                            {{ event.place.location.city }}, {{ event.place.location.state }} {{ event.place.location.zip }}
                         </div>
-                    </li>
-                    <li class="event-details">
-                        <div class="info" style="height:auto">
-                            <p class="desc">
-                                {{ event.description }}
-                            </p>
-                        </div>
-                    </li>
-                </ul>
+                        <p class="card-text">{{ event.description }}</p>
+                    </div>
+                </div>
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-lg btn-primary" value="Reroll" v-on:click="search">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row" v-if="!showEvent">
@@ -107,12 +107,13 @@
                         this.showEvent = true;
 
                         const event = response.data;
+                        this.event = event;
 
-                        this.event = response.data;
+                        console.log(event);
+
                         this.$set(this.event, 'startTime', moment(event.startTime));
                         if (event.endTime)
                             this.$set(this.event, 'endTime', moment(event.endTime));
-                        //{"id":"106688233357249","type":"public","name":"Acoustic Happy Hour with Lindsey Vogt","description":"Live Music Presented by AZ Chicks with Picks.\n\n$4 Local Huss Brewery Pints\n\n$4 House Wines\n\n$4 Cocktail of the Day\n\n1\/2 Priced Appetizers (excluding Jumbo Combo)","startTime":"2017-08-03T16:00:00-0700","endTime":"2017-08-13T19:00:00-0700","place":null,"requested_date":"2017-08-08T01:08:19-04:00"}
                     });
             },
 
