@@ -23,6 +23,7 @@
     <body>
         <script>
             var statusChangeCallback = function(response) {
+                console.log(response);
                 switch (response.status) {
                     case 'unknown':
                         window.fbToken = null;
@@ -47,7 +48,6 @@
                     statusChangeCallback(response);
                 });
 
-                FB.Event.subscribe('auth.authResponseChange', auth_response_change_callback);
                 FB.Event.subscribe('auth.statusChange', statusChangeCallback);
             };
 
