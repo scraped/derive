@@ -59509,13 +59509,17 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
 
             this.searching = true;
 
-            axios.get('/events/search', {
-                params: {
-                    lat: lat,
-                    lng: lng,
-                    date: moment().format()
-                }
-            }).then(function (response) {
+            var params = {
+                lat: lat,
+                lng: lng,
+                date: moment().format()
+            };
+
+            if (window.fbToken) {
+                params.fbToken = window.fbToken;
+            }
+
+            axios.get('/events/search', { params: params }).then(function (response) {
                 _this2.showEvent = true;
 
                 var event = response.data;

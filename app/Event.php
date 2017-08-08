@@ -17,6 +17,8 @@ class Event
     public $endTime;
     public $place;
 
+    private static $fbToken;
+
     function __construct($attributes)
     {
         $this->id = $attributes->id;
@@ -75,6 +77,19 @@ class Event
         return $events;
     }
 
+    public static function getFbToken()
+    {
+        if (empty(static::$fbToken)) {
+            static::$fbToken = env('GRAPH_API_CLIENT_ID') . '|' . env('GRAPH_API_SECRET');
+        }
+        return static::$fbToken;
+    }
+
+    public static function setFbToken($token)
+    {
+        static::$fbToken = $token;
+    }
+
     private static function getLocationDetails(Collection $locationIds)
     {
         $client = new GuzzleHttp\Client();
@@ -114,7 +129,7 @@ class Event
         foreach($chunkedIds as $ids) {
             $res = $client->request('GET', 'https://graph.facebook.com/v2.10/', [
                 'query' => [
-                    'access_token' => env('GRAPH_API_CLIENT_ID') . '|' . env('GRAPH_API_SECRET'),
+                    'access_token' => Event::getFbToken(),
                     'ids' => implode($ids, ','),
                     'fields' => implode($locationFields, ',')
                 ]
@@ -137,7 +152,7 @@ class Event
                 $res = empty($next)
                     ? $client->request('GET', 'https://graph.facebook.com/v2.10/search', [
                         'query' => [
-                            'access_token' => env('GRAPH_API_CLIENT_ID') . '|' . env('GRAPH_API_SECRET'),
+                            'access_token' => Event::getFbToken(),
                             'type' => 'place',
                             'center' => "$lat,$lng",
                             'distance' => $dist
