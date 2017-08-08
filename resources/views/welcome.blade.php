@@ -25,6 +25,7 @@
             <div class="content mt-lg mc">
                 <div class="title m-b-md">
                     Dérive
+                    <h2>Random events near you.</h2>
                 </div>
                 <div style="height:420px">
                     <events-search></events-search>
