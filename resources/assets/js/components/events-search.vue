@@ -66,6 +66,14 @@
                 </div>
             </div>
         </div>
+        <transition name="slide-fade">
+            <div class="popupunder alert alert-danger" v-if="error">
+                <button type="button" class="close close-sm" data-dismiss="alert">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </button>
+                <strong>Error: </strong> {{ error }}
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -90,6 +98,7 @@
             return {
                 center,
                 marker,
+                error: null,
                 event: {},
                 searching: false,
                 showEvent: false
@@ -139,7 +148,17 @@
                             this.$set(this.event, 'endTime', moment(event.endTime));
                     })
                     .catch((error) => {
+                        this.error = 'No events found for today!';
                         this.searching = false;
+                        this.showEvent = false;
+
+                        window.setTimeout(function() {
+                            $('input.autocomplete').focus();
+                        }, 500);
+
+                        window.setTimeout(() => {
+                            this.error = null;
+                        }, 5000);
                     });
             },
 

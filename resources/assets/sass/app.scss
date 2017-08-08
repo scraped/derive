@@ -28,3 +28,24 @@
 a {
   cursor: pointer;
 }
+
+.popupunder{
+  width: 300px;
+  position:fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  border: 0;
+  padding: 20px;
+
+  &.alert-danger{
+    border: 1px solid darken($brand-danger, 10%);
+  }
+
+  .close{
+    font-size: 10px;
+    position:absolute !important;
+    right: 2px;
+    top: 3px;
+  }
+}

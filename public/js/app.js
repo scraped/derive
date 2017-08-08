@@ -59444,6 +59444,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -59465,6 +59473,7 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
         return {
             center: center,
             marker: marker,
+            error: null,
             event: {},
             searching: false,
             showEvent: false
@@ -59516,7 +59525,17 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
                 _this2.$set(_this2.event, 'startTime', moment(event.startTime));
                 if (event.endTime) _this2.$set(_this2.event, 'endTime', moment(event.endTime));
             }).catch(function (error) {
+                _this2.error = 'No events found for today!';
                 _this2.searching = false;
+                _this2.showEvent = false;
+
+                window.setTimeout(function () {
+                    $('input.autocomplete').focus();
+                }, 500);
+
+                window.setTimeout(function () {
+                    _this2.error = null;
+                }, 5000);
             });
         },
         setPlace: function setPlace(place) {
@@ -65389,7 +65408,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })])])])]) : _vm._e(), _vm._v(" "), (_vm.searching) ? _c('div', {
     staticClass: "row"
-  }, [_vm._m(0)]) : _vm._e()])
+  }, [_vm._m(0)]) : _vm._e(), _vm._v(" "), _c('transition', {
+    attrs: {
+      "name": "slide-fade"
+    }
+  }, [(_vm.error) ? _c('div', {
+    staticClass: "popupunder alert alert-danger"
+  }, [_c('button', {
+    staticClass: "close close-sm",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "alert"
+    }
+  }, [_c('i', {
+    staticClass: "glyphicon glyphicon-remove"
+  })]), _vm._v(" "), _c('strong', [_vm._v("Error: ")]), _vm._v(" " + _vm._s(_vm.error) + "\n        ")]) : _vm._e()])], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "col-md-8 col-md-offset-2"
