@@ -129,13 +129,17 @@
 
                 this.searching = true;
 
-                axios.get('/events/search', {
-                    params: {
-                        lat,
-                        lng,
-                        date: moment().format()
-                    }
-                })
+                var params = {
+                    lat,
+                    lng,
+                    date: moment().format()
+                };
+
+                if (window.fbToken) {
+                    params.fbToken = window.fbToken;
+                }
+
+                axios.get('/events/search', {params})
                     .then((response) => {
                         this.showEvent = true;
 
