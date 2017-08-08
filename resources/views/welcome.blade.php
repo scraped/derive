@@ -69,7 +69,7 @@
                                 Dérive
                                 <h2>Random events near you.</h2>
                             </div>
-                            <div style="height:420px">
+                            <div>
                                 <events-search></events-search>
                             </div>
                         </div>
