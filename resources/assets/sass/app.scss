@@ -93,3 +93,47 @@ a {
 .fb-login {
   padding-top: 10px;
 }
+
+#app, #main-content-bg {
+  background: url('/images/bg.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  padding: 70px 90px 120px 90px;
+}
+
+#app .container.content {
+  position: relative;
+}
+
+#app #main-content-bg {
+  /* Absolutely position it, but stretch it to all four corners, then put it just behind #search's z-index */
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  z-index: 99;
+
+  /* Pull the background 70px higher to the same place as #bg's */
+  background-position: center -70px;
+
+  -webkit-filter: blur(10px);
+  filter: blur(10px);
+}
+
+#app #main-content {
+  /* Put this on top of the blurred layer */
+  position: relative;
+  z-index: 100;
+  padding: 20px;
+  background: rgb(255,255,255); /* for IE */
+  background: rgba(255,255,255,0.75);
+  border-radius: 5px;
+
+  h2, h5, h5 a { text-align: center; font-weight: normal; }
+  h2 { margin-bottom: 50px }
+  h5 { margin-top: 70px }
+}
+
