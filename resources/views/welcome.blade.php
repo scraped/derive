@@ -59,10 +59,8 @@
                 <div style="height:420px">
                     <events-search></events-search>
                 </div>
-                <fb:login-button
-                    scope="public_profile,email"
-                    onlogin="checkLoginState();">
-                </fb:login-button>
+                <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with"
+                     data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
             </div>
         </div>
         <script src="/js/app.js"></script>
