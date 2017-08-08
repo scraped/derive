@@ -22,6 +22,15 @@
     </head>
     <body>
         <script>
+            // In your JavaScript
+            var auth_response_change_callback = function(response) {
+                console.log("auth_response_change_callback");
+                console.log(response);
+            }
+
+            var auth_status_change_callback = function(response) {
+                console.log("auth_status_change_callback: " + response.status);
+            }
             window.fbAsyncInit = function() {
                 FB.init({
                     appId      : '1915610145354409',
@@ -34,6 +43,10 @@
                     console.log(response);
                     statusChangeCallback(response);
                 });
+
+                FB.Event.subscribe('auth.authResponseChange', auth_response_change_callback);
+                FB.Event.subscribe('auth.statusChange', auth_status_change_callback);
+
             };
 
             (function(d, s, id){
@@ -60,9 +73,8 @@
                 <div style="height:420px">
                     <events-search></events-search>
                 </div>
-                <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with"
-                     data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"
-                     onlogin="checkLoginState()"></div>
+                <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with"
+                     data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
             </div>
         </div>
         <script src="/js/app.js"></script>
