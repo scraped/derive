@@ -22,7 +22,8 @@ class RequestLogger
     public function terminate($request, $response)
     {
         Log::info('requests', [
-            'request' => $request->all()
+            'request' => $request->all(),
+            'header' => $request->headers->all()
         ]);
     }
 }
