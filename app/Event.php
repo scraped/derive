@@ -57,7 +57,7 @@ class Event
             }
         }
 
-        $dateTime = (new Carbon($dateTime))->addHours(1);
+        $dateTime = (new Carbon($dateTime));
 
         // Filter events by date
         $events = collect($events)
@@ -66,9 +66,9 @@ class Event
                 $endTime = isset($item->endTime) ? new Carbon($item->endTime) : null;
 
                 if (!$endTime)
-                    return $dateTime->gt($beginTime) && $dateTime->lt($beginTime->addDays(1));
+                    return $dateTime->gt($beginTime->subHours(6)) && $dateTime->lt($beginTime->addDays(1));
 
-                return $dateTime->gt($beginTime) && $dateTime->lt($endTime);
+                return $dateTime->gt($beginTime->subHours(6)) && $dateTime->lt($endTime);
             })
             ->toArray();
 
