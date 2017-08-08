@@ -49,8 +49,11 @@ class Event
         foreach ($detailedLocations as $loc) {
             if (empty($loc->events))
                 continue;
-            foreach ($loc->events->data as $event) {
-                array_push($events, new Event($event));
+            foreach ($loc->events->data as $eventData) {
+                $event = new Event($eventData);
+
+                $event->place = $loc;
+                array_push($events, $event);
             }
         }
 
@@ -63,9 +66,9 @@ class Event
                 $endTime = isset($item->endTime) ? new Carbon($item->endTime) : null;
 
                 if (!$endTime)
-                    return $dateTime->gt($beginTime) && $dateTime->lt($beginTime->addDays(2));
+                    return $dateTime->gt($beginTime) && $dateTime->lt($beginTime->addDays(1));
 
-                return $dateTime->gt($beginTime) && $dateTime->lt($endTime->addDays(1));
+                return $dateTime->gt($beginTime) && $dateTime->lt($endTime);
             })
             ->toArray();
 
