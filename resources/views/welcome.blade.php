@@ -22,15 +22,19 @@
     </head>
     <body>
         <script>
-            // In your JavaScript
-            var auth_response_change_callback = function(response) {
-                console.log("auth_response_change_callback");
-                console.log(response);
+            var statusChangeCallback = function(response) {
+                switch (response.status) {
+                    case 'unknown':
+                        window.fbToken = null;
+                        break;
+                    case 'connected':
+                        window.fbToken = response.authResponse.accessToken;
+                        break;
+                    default:
+                        break;
+                }
             }
 
-            var auth_status_change_callback = function(response) {
-                console.log("auth_status_change_callback: " + response.status);
-            }
             window.fbAsyncInit = function() {
                 FB.init({
                     appId      : '1915610145354409',
@@ -40,13 +44,11 @@
                 });
                 FB.AppEvents.logPageView();
                 FB.getLoginStatus(function(response) {
-                    console.log(response);
                     statusChangeCallback(response);
                 });
 
                 FB.Event.subscribe('auth.authResponseChange', auth_response_change_callback);
-                FB.Event.subscribe('auth.statusChange', auth_status_change_callback);
-
+                FB.Event.subscribe('auth.statusChange', statusChangeCallback);
             };
 
             (function(d, s, id){
@@ -56,13 +58,6 @@
                 js.src = "//connect.facebook.net/en_US/sdk.js";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
-
-            function checkLoginState() {
-                FB.getLoginStatus(function(response) {
-                    console.log(response);
-                    statusChangeCallback(response);
-                });
-            }
         </script>
         <div id="app">
             <div class="content mt-lg mc">
@@ -73,8 +68,13 @@
                 <div style="height:420px">
                     <events-search></events-search>
                 </div>
-                <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with"
-                     data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
+                <div class="fb-login">
+                    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with"
+                         data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
+                    <p>
+                        <em>Log in with Facebook to include non-public events.</em>
+                    </p>
+                </div>
             </div>
         </div>
         <script src="/js/app.js"></script>
