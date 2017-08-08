@@ -41958,7 +41958,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -41973,26 +41972,20 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
 });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    components: { VueGoogleAutocomplete: VueGoogleAutocomplete },
-
     data: function data() {
-        var center = { lat: 10.0, lng: 10.0 };
-        var marker = { lat: 10.0, lng: 10.0 };
+        var center = { lat: 33.4483771, lng: -112.07403729999999 };
+        var marker = { lat: 33.4483771, lng: -112.07403729999999 };
 
         return {
             center: center,
             marker: marker,
-            enabled: false,
             geoError: false
         };
     },
     mounted: function mounted() {
         var _this = this;
 
-        if (!navigator.geolocation) {
-            this.enabled = false;
-            return;
-        }
+        if (!navigator.geolocation) return;
 
         navigator.geolocation.getCurrentPosition(function (position) {
             _this.$set(_this.center, 'lat', position.coords.latitude);
@@ -42025,6 +42018,14 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
             }).then(function (response) {
                 console.log(response);
             });
+        },
+        setPlace: function setPlace(place) {
+            var lat = place.geometry.location.lat();
+            var lng = place.geometry.location.lng();
+            this.$set(this.center, 'lat', lat);
+            this.$set(this.center, 'lng', lng);
+            this.$set(this.marker, 'lat', lat);
+            this.$set(this.marker, 'lng', lng);
         }
     }
 });
@@ -42040,7 +42041,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-8 col-md-offset-2"
-  }, [_c('gmap-map', {
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('gmap-autocomplete', {
+    staticClass: "form-control",
+    on: {
+      "place_changed": _vm.setPlace
+    }
+  })], 1), _vm._v(" "), _c('gmap-map', {
     staticStyle: {
       "width": "500px",
       "height": "300px",
@@ -42073,11 +42081,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.search
     }
-  })])])])]), _vm._v(" "), (_vm.geoError) ? _c('div', {
-    staticClass: "row"
-  }, [_c('div', {
-    staticClass: "col-md-8 col-md-offset-2"
-  }, [_vm._v("\n            TEST\n        ")])]) : _vm._e()])
+  })])])])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

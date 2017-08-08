@@ -2,6 +2,10 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
+                <div class="form-group">
+                    <gmap-autocomplete @place_changed="setPlace" class="form-control">
+                    </gmap-autocomplete>
+                </div>
                 <gmap-map
                     :center="center"
                     :zoom="7"
@@ -17,11 +21,6 @@
                         <input type="button" class="btn btn-primary form-control" value="Go" v-on:click="search">
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row" v-if="geoError">
-            <div class="col-md-8 col-md-offset-2">
-                TEST
             </div>
         </div>
     </div>
@@ -41,25 +40,20 @@
     });
 
     export default {
-        components: { VueGoogleAutocomplete },
-
         data() {
-            var center = {lat: 10.0, lng: 10.0};
-            var marker = {lat: 10.0, lng: 10.0};
+            var center = {lat: 33.4483771, lng: -112.07403729999999};
+            var marker = {lat: 33.4483771, lng: -112.07403729999999};
 
             return {
                 center,
                 marker,
-                enabled: false,
                 geoError: false
             };
         },
 
         mounted() {
-            if (!navigator.geolocation) {
-                this.enabled = false;
+            if (!navigator.geolocation)
                 return;
-            }
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -92,6 +86,15 @@
                     .then((response) => {
                         console.log(response);
                     });
+            },
+
+            setPlace(place) {
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
+                this.$set(this.center, 'lat', lat);
+                this.$set(this.center, 'lng', lng);
+                this.$set(this.marker, 'lat', lat);
+                this.$set(this.marker, 'lng', lng);
             }
         }
     }
