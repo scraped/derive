@@ -45,6 +45,7 @@
 
             .title {
                 font-size: 84px;
+                font-family: 'Quicksand';
             }
 
             .links > a {
