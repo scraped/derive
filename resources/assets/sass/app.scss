@@ -10,6 +10,32 @@
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
 @import "load_spinner";
+@import "responsive_margins";
+
+.content {
+  text-align: center;
+}
+
+.title {
+  font-size: 84px;
+  font-family: 'Quicksand';
+}
+
+.links > a {
+  color: #636b6f;
+  padding: 0 25px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1rem;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.m-b-md {
+  margin-bottom: 30px;
+}
+
+// Transitions ===============================================================
 
 .slide-fade-enter-active {
   transition: all .3s ease;
@@ -48,4 +74,14 @@ a {
     right: 2px;
     top: 3px;
   }
+}
+
+.vue-map {
+  border-radius: 4px;
+}
+
+.vue-map-container {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
 }

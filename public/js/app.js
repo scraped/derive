@@ -59452,6 +59452,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -65322,6 +65324,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-8 col-md-offset-2"
+  }, [_c('div', {
+    staticClass: "clearfix"
   }, [_c('a', {
     staticClass: "pull-left",
     on: {
@@ -65333,7 +65337,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "glyphicon glyphicon-chevron-left"
   }), _c('span', {
     staticClass: "glyphicon glyphicon-map-marker"
-  })]), _vm._v(" "), _c('div', {
+  })])]), _vm._v(" "), _c('div', {
     staticClass: "event card"
   }, [_c('div', {
     staticClass: "card-block"
@@ -65373,11 +65377,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "place_changed": _vm.setPlace
     }
   })], 1), _vm._v(" "), _c('gmap-map', {
-    staticStyle: {
-      "width": "500px",
-      "height": "300px",
-      "margin": "0 auto"
-    },
+    staticClass: "img-responsive",
     attrs: {
       "center": _vm.center,
       "zoom": 7,

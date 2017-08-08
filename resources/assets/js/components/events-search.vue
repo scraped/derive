@@ -2,9 +2,11 @@
     <div class="container">
         <div class="row" v-if="showEvent && !!event && !searching">
             <div class="col-md-8 col-md-offset-2">
-                <a v-on:click="showMap()" class="pull-left">
-                    <span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-map-marker"></span>
-                </a>
+                <div class="clearfix">
+                    <a v-on:click="showMap()" class="pull-left">
+                        <span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-map-marker"></span>
+                    </a>
+                </div>
                 <div class="event card">
                     <!--<img class="card-img-top" src="..." alt="Card image cap">-->
                     <div class="card-block">
@@ -39,7 +41,7 @@
                     :center="center"
                     :zoom="7"
                     map-type-id="terrain"
-                    style="width: 500px; height: 300px; margin: 0 auto;">
+                    class="img-responsive">
                     <gmap-marker :position="marker">
                     </gmap-marker>
                 </gmap-map>
