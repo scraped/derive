@@ -9286,7 +9286,8 @@ a {
 #main-content-bg {
   background: url("/images/bg.jpg") no-repeat center center fixed;
   background-size: cover;
-  padding: 70px 90px 120px 90px;
+  padding-top: 70px;
+  padding-bottom: 120px;
 }
 
 #app .container.content {
