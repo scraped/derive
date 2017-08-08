@@ -43,6 +43,12 @@
                 js.src = "//connect.facebook.net/en_US/sdk.js";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
+
+            function checkLoginState() {
+                FB.getLoginStatus(function(response) {
+                    statusChangeCallback(response);
+                });
+            }
         </script>
         <div id="app">
             <div class="content mt-lg mc">
@@ -53,6 +59,10 @@
                 <div style="height:420px">
                     <events-search></events-search>
                 </div>
+                <fb:login-button
+                    scope="public_profile,email"
+                    onlogin="checkLoginState();">
+                </fb:login-button>
             </div>
         </div>
         <script src="/js/app.js"></script>
