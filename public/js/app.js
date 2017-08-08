@@ -65322,9 +65322,7 @@ webpackContext.id = 272;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "container"
-  }, [(_vm.showEvent && !!_vm.event && !_vm.searching) ? _c('div', {
+  return _c('div', [(_vm.showEvent && !!_vm.event && !_vm.searching) ? _c('div', {
     staticClass: "row"
   }, [_c('div', {
     staticClass: "col-md-8 col-md-offset-2"

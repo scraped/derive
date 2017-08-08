@@ -60,21 +60,29 @@
             }(document, 'script', 'facebook-jssdk'));
         </script>
         <div id="app">
-            <div class="content mt-lg mc">
-                <div class="title m-b-md">
-                    Dérive
-                    <h2>Random events near you.</h2>
+            <div class="container content mt-lg mc">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="title m-b-md">
+                            Dérive
+                            <h2>Random events near you.</h2>
+                        </div>
+                        <div style="height:420px">
+                            <events-search></events-search>
+                        </div>
+                    </div>
                 </div>
-                <div style="height:420px">
-                    <events-search></events-search>
-                </div>
-                <div class="fb-login">
-                    <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with"
-                         data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"
-                        data-scope="user_events"></div>
-                    <p>
-                        <em>Log in with Facebook to include non-public events.</em>
-                    </p>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="fb-login">
+                            <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with"
+                                 data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"
+                                data-scope="user_events"></div>
+                            <p>
+                                <em>Log in with Facebook to include non-public events.</em>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

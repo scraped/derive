@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <div class="row" v-if="showEvent && !!event && !searching">
             <div class="col-md-8 col-md-offset-2">
                 <div class="clearfix">
