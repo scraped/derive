@@ -76,7 +76,7 @@
                 <div class="title m-b-md">
                     Dérive
                 </div>
-                <div>
+                <div style="height:420px">
                     <events-search></events-search>
                 </div>
             </div>

@@ -1,9 +1,35 @@
 <template>
     <div class="container">
-        <div class="row">
+        <div class="row" v-if="showEvent && !!event">
+            <div class="col-md-8 col-md-offset-2">
+                <ul class="event-list">
+                    <li>
+                        <time datetime="2014-07-20">
+                            <span class="day">{{ event.startTime.date() }}</span>
+                            <span class="month">{{ event.startTime.format('MMM') }}</span>
+                            <span class="year">{{ event.startTime.year() }}</span>
+                            <span class="time">ALL DAY</span>
+                        </time>
+
+                        <div class="info">
+                            <h2 class="title">{{ event.name }}</h2>
+                            <span>{{ event.startTime }}</span>
+                        </div>
+                    </li>
+                    <li class="event-details">
+                        <div class="info" style="height:auto">
+                            <p class="desc">
+                                {{ event.description }}
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row" v-if="!showEvent">
             <div class="col-md-8 col-md-offset-2">
                 <div class="form-group">
-                    <gmap-autocomplete @place_changed="setPlace" class="form-control">
+                    <gmap-autocomplete @place_changed="setPlace" :selectFirstOnEnter="true" class="form-control">
                     </gmap-autocomplete>
                 </div>
                 <gmap-map
@@ -18,7 +44,7 @@
             <div class="col-md-8 col-md-offset-2" style="padding-top:20px">
                 <div class="form-inline">
                     <div class="form-group">
-                        <input type="button" class="btn btn-primary form-control" value="Go" v-on:click="search">
+                        <input type="button" class="btn btn-lg btn-primary" value="Roll" v-on:click="search">
                     </div>
                 </div>
             </div>
@@ -47,7 +73,8 @@
             return {
                 center,
                 marker,
-                geoError: false
+                event: {},
+                showEvent: false
             };
         },
 
@@ -62,13 +89,6 @@
                     this.$set(this.marker, 'lat', position.coords.latitude);
                     this.$set(this.marker, 'lng', position.coords.longitude);
                     this.enabled = true;
-                },
-                (error) => {
-                    console.log(error);
-                    this.geoError = true;
-                },
-                {
-                    timeout: 10000
                 });
         },
 
@@ -84,7 +104,15 @@
                     }
                 })
                     .then((response) => {
-                        console.log(response);
+                        this.showEvent = true;
+
+                        const event = response.data;
+
+                        this.event = response.data;
+                        this.$set(this.event, 'startTime', moment(event.startTime));
+                        if (event.endTime)
+                            this.$set(this.event, 'endTime', moment(event.endTime));
+                        //{"id":"106688233357249","type":"public","name":"Acoustic Happy Hour with Lindsey Vogt","description":"Live Music Presented by AZ Chicks with Picks.\n\n$4 Local Huss Brewery Pints\n\n$4 House Wines\n\n$4 Cocktail of the Day\n\n1\/2 Priced Appetizers (excluding Jumbo Combo)","startTime":"2017-08-03T16:00:00-0700","endTime":"2017-08-13T19:00:00-0700","place":null,"requested_date":"2017-08-08T01:08:19-04:00"}
                     });
             },
 
