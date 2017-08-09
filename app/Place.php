@@ -78,8 +78,6 @@ class Place extends Model
             return $item->id;
         });
 
-        dd(implode(',', $locationIds->toArray()));
-
         $detailedLocations = Cache::remember("detailedLocations:$lat,$lng,$dist", 30, function() use ($locationIds) {
             return static::getPlaces($locationIds);
         });

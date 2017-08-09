@@ -41,6 +41,8 @@ class Event extends Model
         $this->description = isset($attributes->description) ? $attributes->description : null;
         $this->startTime = $attributes->start_time;
         $this->endTime = isset($attributes->end_time) ? $attributes->end_time : null;
+        $this->picture = isset($attributes->picture) ? $attributes->picture : null;
+        $this->cover = isset($attributes->cover) ? $attributes->cover : null;
     }
 
     public static function randomEvent($lat, $lng, $dist, $dateTime)

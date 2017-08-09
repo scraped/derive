@@ -12,6 +12,8 @@
 @import "load_spinner";
 @import "responsive_margins";
 
+// Main Layout ===============================================================
+
 .content {
   text-align: center;
 }
@@ -37,22 +39,6 @@
 
 .m-b-md {
   margin-bottom: 30px;
-}
-
-// Transitions ===============================================================
-
-.slide-fade-enter-active {
-  transition: all .3s ease;
-}
-
-.slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-
-.slide-fade-enter, .slide-fade-leave-to
-  /* .slide-fade-leave-active below version 2.1.8 */ {
-  transform: translateX(10px);
-  opacity: 0;
 }
 
 a {
@@ -93,6 +79,10 @@ a {
 .fb-login {
   padding-top: 20px;
   padding-bottom: 20px;
+}
+
+img.card-img-top {
+  border-radius: 5px;
 }
 
 #app {
@@ -144,3 +134,18 @@ body, #main-content-bg {
   h5 { margin-top: 70px }
 }
 
+// Transitions ===============================================================
+
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}

@@ -8,11 +8,12 @@
                     </a>
                 </div>
                 <div class="event card">
-                    <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+                    <input type="hidden" id="event-id" v-bind:value="event.id">
+                    <img class="card-img-top" v-bind:src="event.picture.data.url" v-if="event.picture && event.picture.data">
                     <div class="card-block">
                         <h1 class="card-title">{{ event.name }}</h1>
                         <h2 class="card-text">
-                            {{ event.startTime.calendar() }}
+                            <span v-if="event.startTime">{{ event.startTime.calendar() }}</span>
                             <span v-if="event.endTime"> until {{ event.endTime.calendar() }}</span>
                         </h2>
                         <div class="card-text address" v-if="event.place">
