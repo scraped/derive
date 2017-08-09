@@ -38,7 +38,7 @@ class Event extends Model
         $this->id = $attributes->id;
         $this->type = $attributes->type;
         $this->name = $attributes->name;
-        $this->description = isset($attributes->description) ? $attributes->description : null;
+        $this->description = isset($attributes->description) ? nl2br($attributes->description) : null;
         $this->startTime = $attributes->start_time;
         $this->endTime = isset($attributes->end_time) ? $attributes->end_time : null;
         $this->picture = isset($attributes->picture) ? $attributes->picture : null;

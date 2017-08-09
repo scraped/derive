@@ -30,7 +30,7 @@
                             <br>
                             {{ event.place.location.city }}, {{ event.place.location.state }} {{ event.place.location.zip }}
                         </div>
-                        <p class="card-text">{{ event.description }}</p>
+                        <p class="card-text" v-html="event.description"></p>
                     </div>
                 </div>
                 <div class="form-inline">
