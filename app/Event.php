@@ -7,7 +7,7 @@ use GuzzleHttp;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
-class Event
+class Event extends Model
 {
     public $id;
     public $type;
@@ -16,8 +16,6 @@ class Event
     public $startTime;
     public $endTime;
     public $place;
-
-    private static $fbToken;
 
     function __construct($attributes)
     {
@@ -37,24 +35,18 @@ class Event
 
     public static function search($lat, $lng, $dist, $dateTime)
     {
-        $locations = static::getLocations($lat, $lng, $dist);
-
-        $locationIds = collect($locations)->map(function($item) {
-            return $item->id;
-        });
-
-        $detailedLocations = Cache::remember("detailedLocations:$lat,$lng,$dist", 30, function() use ($locationIds) {
-            return static::getLocationDetails($locationIds);
+        $places = Cache::remember("places:$lat,$lng,$dist", 30, function() use ($lat, $lng, $dist) {
+            return Place::search($lat, $lng, $dist);
         });
 
         $events = [];
-        foreach ($detailedLocations as $loc) {
-            if (empty($loc->events))
+        foreach ($places as $place) {
+            if (empty($place->events))
                 continue;
-            foreach ($loc->events->data as $eventData) {
+            foreach ($place->events->data as $eventData) {
                 $event = new Event($eventData);
 
-                $event->place = $loc;
+                $event->place = $place;
                 array_push($events, $event);
             }
         }
@@ -75,98 +67,5 @@ class Event
             ->toArray();
 
         return $events;
-    }
-
-    public static function getFbToken()
-    {
-        if (empty(static::$fbToken)) {
-            static::$fbToken = env('GRAPH_API_CLIENT_ID') . '|' . env('GRAPH_API_SECRET');
-        }
-        return static::$fbToken;
-    }
-
-    public static function setFbToken($token)
-    {
-        static::$fbToken = $token;
-    }
-
-    private static function getLocationDetails(Collection $locationIds)
-    {
-        $client = new GuzzleHttp\Client();
-
-        $eventsFields = [
-            "id",
-            "type",
-            "name",
-            "cover.fields(id,source)",
-            "picture.type(large)",
-            "description",
-            "start_time",
-            "end_time",
-            "category",
-            "attending_count",
-            "declined_count",
-            "maybe_count",
-            "noreply_count"
-        ];
-        $locationFields = [
-            "id",
-            "name",
-            "about",
-            "emails",
-            "cover.fields(id,source)",
-            "picture.type(large)",
-            "category",
-            "category_list.fields(name)",
-            "location",
-            "events.fields(" . implode($eventsFields, ',') . ")"
-        ];
-
-        $detailedLocations = [];
-
-        $chunkedIds = $locationIds->chunk(50)->toArray();
-
-        foreach($chunkedIds as $ids) {
-            $res = $client->request('GET', 'https://graph.facebook.com/v2.10/', [
-                'query' => [
-                    'access_token' => Event::getFbToken(),
-                    'ids' => implode($ids, ','),
-                    'fields' => implode($locationFields, ',')
-                ]
-            ]);
-            $resBody = (array)json_decode($res->getBody()->getContents());
-            $detailedLocations = array_values(array_merge($detailedLocations, $resBody));
-        }
-
-        return $detailedLocations;
-    }
-
-    private static function getLocations($lat, $lng, $dist)
-    {
-        $locations = Cache::remember("locations:$lat,$lng,$dist", 30, function() use ($lat, $lng, $dist) {
-            $client = new GuzzleHttp\Client();
-            $locations = [];
-            $next = '';
-
-            do {
-                $res = empty($next)
-                    ? $client->request('GET', 'https://graph.facebook.com/v2.10/search', [
-                        'query' => [
-                            'access_token' => Event::getFbToken(),
-                            'type' => 'place',
-                            'center' => "$lat,$lng",
-                            'distance' => $dist
-                        ]
-                    ])
-                    : $client->request('GET', $next);
-                $resBody = json_decode($res->getBody()->getContents());
-                $locations = array_values(array_merge($locations, $resBody->data));
-                $next = isset($resBody->paging->next) ? $resBody->paging->next : '';
-            } while (count($locations) < 500 && !empty($next));
-
-            return $locations;
-        });
-
-        return $locations;
     }
 }
