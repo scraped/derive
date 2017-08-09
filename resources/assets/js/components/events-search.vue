@@ -48,10 +48,13 @@
                 </div>
                 <gmap-map
                     :center="center"
-                    :zoom="7"
+                    :zoom="10"
                     map-type-id="terrain"
                     class="img-responsive">
-                    <gmap-marker :position="marker">
+                    <gmap-marker
+                        :position.sync="marker"
+                        :draggable="true"
+                        @position_changed="updateMarker">
                     </gmap-marker>
                 </gmap-map>
             </div>
@@ -162,7 +165,6 @@
                         this.event = event;
 
                         this.searching = false;
-                        console.log(event);
 
                         this.$set(this.event, 'startTime', moment(event.startTime));
                         if (event.endTime)
@@ -195,6 +197,11 @@
 
             showMap() {
                 this.showEvent = false;
+            },
+
+            updateMarker(e) {
+                this.$set(this.marker, 'lat', e.lat());
+                this.$set(this.marker, 'lng', e.lng());
             }
         }
     }

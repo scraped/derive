@@ -59463,6 +59463,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -59543,7 +59546,6 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
                 _this2.event = event;
 
                 _this2.searching = false;
-                console.log(event);
 
                 _this2.$set(_this2.event, 'startTime', moment(event.startTime));
                 if (event.endTime) _this2.$set(_this2.event, 'endTime', moment(event.endTime));
@@ -59572,6 +59574,10 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
         },
         showMap: function showMap() {
             this.showEvent = false;
+        },
+        updateMarker: function updateMarker(e) {
+            this.$set(this.marker, 'lat', e.lat());
+            this.$set(this.marker, 'lng', e.lng());
         }
     }
 });
@@ -65427,12 +65433,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "img-responsive",
     attrs: {
       "center": _vm.center,
-      "zoom": 7,
+      "zoom": 10,
       "map-type-id": "terrain"
     }
   }, [_c('gmap-marker', {
     attrs: {
-      "position": _vm.marker
+      "position": _vm.marker,
+      "draggable": true
+    },
+    on: {
+      "update:position": function($event) {
+        _vm.marker = $event
+      },
+      "position_changed": _vm.updateMarker
     }
   })], 1)], 1), _vm._v(" "), _c('div', {
     staticClass: "col-md-8 col-md-offset-2",
