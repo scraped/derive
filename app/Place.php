@@ -25,7 +25,7 @@ class Place extends Model
     {
     }
 
-    private static function getPlaces(Collection $locationIds)
+    public static function getPlaces(Collection $locationIds)
     {
         $client = new GuzzleHttp\Client();
 
@@ -52,6 +52,13 @@ class Place extends Model
         return $detailedLocations;
     }
 
+    /**
+     * Get a collection of Ids of places that are within range of lat, lng, dist
+     * @param $lat
+     * @param $lng
+     * @param $dist
+     * @return mixed
+     */
     public static function search($lat, $lng, $dist)
     {
         $client = new GuzzleHttp\Client();
@@ -72,16 +79,12 @@ class Place extends Model
             $resBody = json_decode($res->getBody()->getContents());
             $locations = array_values(array_merge($locations, $resBody->data));
             $next = isset($resBody->paging->next) ? $resBody->paging->next : '';
-        } while (count($locations) < 500 && !empty($next));
+        } while (count($locations) && !empty($next));
 
         $locationIds = collect($locations)->map(function($item) {
             return $item->id;
         });
 
-        $detailedLocations = Cache::remember("detailedLocations:$lat,$lng,$dist", 30, function() use ($locationIds) {
-            return static::getPlaces($locationIds);
-        });
-
-        return $detailedLocations;
+        return $locationIds;
     }
 }

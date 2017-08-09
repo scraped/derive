@@ -88,6 +88,7 @@ class Event extends Model
     public static function randomEvent($lat, $lng, $dist, $dateTime)
     {
         $events = static::search($lat, $lng, $dist, $dateTime);
+
         return $events[array_rand($events)];
     }
 
@@ -102,8 +103,22 @@ class Event extends Model
      */
     public static function search($lat, $lng, $dist, $dateTime = null)
     {
-        $places = Cache::remember("places:$lat,$lng,$dist", 30, function() use ($lat, $lng, $dist) {
-            return Place::search($lat, $lng, $dist);
+        $placeIds = Cache::remember("placeIds:$lat,$lng,$dist", 30, function() use ($lat, $lng, $dist) {
+            $placeIds = Place::search($lat, $lng, $dist);
+
+            // approx. km to lat/lng conversion
+            $d2 = ($dist+$dist/2)/111000;
+            $d = [0, $d2*.7071, $d2, $d2*.7071, 0, -$d2*.7071, -$d2, -$d2*.7071];
+            for ($i = 0; $i < 8; $i++) {
+                $resultIds = Place::search(round($lat + $d[2], 2), round($lng + $d[0], 2), $dist);
+                $placeIds = $placeIds->merge($resultIds);
+                array_push($d, array_shift($d));
+            }
+            return $placeIds;
+        });
+
+        $places = Cache::remember("places:$lat,$lng,$dist", 30, function() use ($placeIds) {
+            return Place::getPlaces($placeIds->unique());
         });
 
         $events = [];
