@@ -25,14 +25,47 @@ class Event extends Model
         "noreply_count"
     ];
 
+    /**
+     * @var
+     */
     public $id;
+    /**
+     * @var
+     */
     public $type;
+    /**
+     * @var
+     */
     public $name;
+    /**
+     * @var null|string
+     */
     public $description;
+    /**
+     * @var
+     */
     public $startTime;
+    /**
+     * @var null
+     */
     public $endTime;
+    /**
+     * @var
+     */
     public $place;
+    /**
+     * @var null
+     */
+    public $picture;
+    /**
+     * @var null
+     */
+    public $cover;
 
+    /**
+     * Event constructor.
+     * @param $attributes
+     */
     function __construct($attributes)
     {
         $this->id = $attributes->id;
@@ -45,13 +78,29 @@ class Event extends Model
         $this->cover = isset($attributes->cover) ? $attributes->cover : null;
     }
 
+    /**
+     * @param $lat
+     * @param $lng
+     * @param $dist
+     * @param $dateTime
+     * @return mixed
+     */
     public static function randomEvent($lat, $lng, $dist, $dateTime)
     {
         $events = static::search($lat, $lng, $dist, $dateTime);
         return $events[array_rand($events)];
     }
 
-    public static function search($lat, $lng, $dist, $dateTime)
+    /**
+     * Search events by lat, lng, distance and time
+     * Returns array of Events
+     * @param double $lat Latitude
+     * @param double $lng Longitude
+     * @param int $dist Distance in meters
+     * @param string $dateTime DateTime to filter events by
+     * @return array
+     */
+    public static function search($lat, $lng, $dist, $dateTime = null)
     {
         $places = Cache::remember("places:$lat,$lng,$dist", 30, function() use ($lat, $lng, $dist) {
             return Place::search($lat, $lng, $dist);
@@ -64,12 +113,27 @@ class Event extends Model
             foreach ($place->events->data as $eventData) {
                 $event = new Event($eventData);
 
-                $event->place = $place;
+                $event->place = clone $place;
+                unset($event->place->events);
                 array_push($events, $event);
             }
         }
 
-        $dateTime = (new Carbon($dateTime));
+        if ($dateTime != null)
+            return static::filterEvents($events, new Carbon($dateTime));
+
+        return $events;
+    }
+
+    /**
+     * Filter events by date time
+     * @param array $events List of Events
+     * @param Carbon $dateTime DateTime to filter events by
+     * @return array
+     */
+    public static function filterEvents($events, Carbon $dateTime)
+    {
+        $dateTime = new Carbon($dateTime);
 
         // Filter events by date
         $events = collect($events)
