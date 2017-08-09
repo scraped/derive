@@ -9283,7 +9283,12 @@ a {
   padding-bottom: 20px;
 }
 
-#app,
+#app {
+  height: 100%;
+  overflow: auto;
+}
+
+body,
 #main-content-bg {
   background: url("/images/bg.jpg") no-repeat center center fixed;
   background-size: cover;
