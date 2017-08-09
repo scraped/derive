@@ -9,6 +9,22 @@ use Illuminate\Support\Facades\Cache;
 
 class Event extends Model
 {
+    const API_FIELDS = [
+        "id",
+        "type",
+        "name",
+        "cover.fields(id,source)",
+        "picture.type(large)",
+        "description",
+        "start_time",
+        "end_time",
+        "category",
+        "attending_count",
+        "declined_count",
+        "maybe_count",
+        "noreply_count"
+    ];
+
     public $id;
     public $type;
     public $name;

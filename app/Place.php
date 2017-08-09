@@ -9,6 +9,18 @@ use Illuminate\Support\Facades\Cache;
 
 class Place extends Model
 {
+    const API_FIELDS = [
+        "id",
+        "name",
+        "about",
+        "emails",
+        "cover.fields(id,source)",
+        "picture.type(large)",
+        "category",
+        "category_list.fields(name)",
+        "location"
+    ];
+
     function __construct($attributes)
     {
     }
@@ -17,33 +29,9 @@ class Place extends Model
     {
         $client = new GuzzleHttp\Client();
 
-        $eventsFields = [
-            "id",
-            "type",
-            "name",
-            "cover.fields(id,source)",
-            "picture.type(large)",
-            "description",
-            "start_time",
-            "end_time",
-            "category",
-            "attending_count",
-            "declined_count",
-            "maybe_count",
-            "noreply_count"
-        ];
-        $locationFields = [
-            "id",
-            "name",
-            "about",
-            "emails",
-            "cover.fields(id,source)",
-            "picture.type(large)",
-            "category",
-            "category_list.fields(name)",
-            "location",
-            "events.fields(" . implode($eventsFields, ',') . ")"
-        ];
+        $eventsFields = Event::API_FIELDS;
+        $locationFields = static::API_FIELDS;
+        array_push($locationFields, "events.fields(" . implode($eventsFields, ',') . ")");
 
         $detailedLocations = [];
 
@@ -89,6 +77,8 @@ class Place extends Model
         $locationIds = collect($locations)->map(function($item) {
             return $item->id;
         });
+
+        dd(implode(',', $locationIds->toArray()));
 
         $detailedLocations = Cache::remember("detailedLocations:$lat,$lng,$dist", 30, function() use ($locationIds) {
             return static::getPlaces($locationIds);

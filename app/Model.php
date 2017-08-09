@@ -5,6 +5,7 @@ namespace App;
 class Model
 {
     protected static $fbToken;
+    protected static $fbUserId;
 
     public static function getFbToken()
     {
@@ -17,5 +18,15 @@ class Model
     public static function setFbToken($token)
     {
         static::$fbToken = $token;
+    }
+
+    public static function getFbUserId()
+    {
+        return self::$fbUserId;
+    }
+
+    public static function setFbUserId($fbUserId)
+    {
+        self::$fbUserId = $fbUserId;
     }
 }
