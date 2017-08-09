@@ -8,11 +8,20 @@
                     </a>
                 </div>
                 <div class="event card">
-                    <!--<img class="card-img-top" src="..." alt="Card image cap">-->
+                    <input type="hidden" id="event-id" v-bind:value="event.id">
+                    <h1 class="card-title">
+                        <a v-bind:href="eventUrl" target="_blank">
+                            <img class="card-img-top" v-bind:src="event.picture.data.url" v-if="event.picture && event.picture.data">
+                        </a>
+                    </h1>
                     <div class="card-block">
-                        <h1 class="card-title">{{ event.name }}</h1>
+                        <h1 class="card-title">
+                            <a v-bind:href="eventUrl" target="_blank">
+                                {{ event.name }}
+                            </a>
+                        </h1>
                         <h2 class="card-text">
-                            {{ event.startTime.calendar() }}
+                            <span v-if="event.startTime">{{ event.startTime.calendar() }}</span>
                             <span v-if="event.endTime"> until {{ event.endTime.calendar() }}</span>
                         </h2>
                         <div class="card-text address" v-if="event.place">
@@ -105,6 +114,12 @@
                 searching: false,
                 showEvent: false
             };
+        },
+
+        computed: {
+            eventUrl() {
+                return `https://www.facebook.com/events/${this.event.id}`;
+            }
         },
 
         mounted() {

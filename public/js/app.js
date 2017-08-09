@@ -59454,6 +59454,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -59481,6 +59490,14 @@ __WEBPACK_IMPORTED_MODULE_1_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_0_vue2
             showEvent: false
         };
     },
+
+
+    computed: {
+        eventUrl: function eventUrl() {
+            return 'https://www.facebook.com/events/' + this.event.id;
+        }
+    },
+
     mounted: function mounted() {
         var _this = this;
 
@@ -65341,13 +65358,38 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "glyphicon glyphicon-map-marker"
   })])]), _vm._v(" "), _c('div', {
     staticClass: "event card"
-  }, [_c('div', {
+  }, [_c('input', {
+    attrs: {
+      "type": "hidden",
+      "id": "event-id"
+    },
+    domProps: {
+      "value": _vm.event.id
+    }
+  }), _vm._v(" "), _c('h1', {
+    staticClass: "card-title"
+  }, [_c('a', {
+    attrs: {
+      "href": _vm.eventUrl,
+      "target": "_blank"
+    }
+  }, [(_vm.event.picture && _vm.event.picture.data) ? _c('img', {
+    staticClass: "card-img-top",
+    attrs: {
+      "src": _vm.event.picture.data.url
+    }
+  }) : _vm._e()])]), _vm._v(" "), _c('div', {
     staticClass: "card-block"
   }, [_c('h1', {
     staticClass: "card-title"
-  }, [_vm._v(_vm._s(_vm.event.name))]), _vm._v(" "), _c('h2', {
+  }, [_c('a', {
+    attrs: {
+      "href": _vm.eventUrl,
+      "target": "_blank"
+    }
+  }, [_vm._v("\n                            " + _vm._s(_vm.event.name) + "\n                        ")])]), _vm._v(" "), _c('h2', {
     staticClass: "card-text"
-  }, [_vm._v("\n                        " + _vm._s(_vm.event.startTime.calendar()) + "\n                        "), (_vm.event.endTime) ? _c('span', [_vm._v(" until " + _vm._s(_vm.event.endTime.calendar()))]) : _vm._e()]), _vm._v(" "), (_vm.event.place) ? _c('div', {
+  }, [(_vm.event.startTime) ? _c('span', [_vm._v(_vm._s(_vm.event.startTime.calendar()))]) : _vm._e(), _vm._v(" "), (_vm.event.endTime) ? _c('span', [_vm._v(" until " + _vm._s(_vm.event.endTime.calendar()))]) : _vm._e()]), _vm._v(" "), (_vm.event.place) ? _c('div', {
     staticClass: "card-text address"
   }, [_c('h3', [_vm._v(_vm._s(_vm.event.place.name))]), _vm._v("\n                        " + _vm._s(_vm.event.place.location.street) + "\n                        "), _c('br'), _vm._v("\n                        " + _vm._s(_vm.event.place.location.city) + ", " + _vm._s(_vm.event.place.location.state) + " " + _vm._s(_vm.event.place.location.zip) + "\n                    ")]) : _vm._e(), _vm._v(" "), _c('p', {
     staticClass: "card-text"
