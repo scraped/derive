@@ -63,23 +63,52 @@ class Place extends Model
     {
         $client = new GuzzleHttp\Client();
         $locations = [];
-        $next = '';
 
-        do {
-            $res = empty($next)
-                ? $client->request('GET', 'https://graph.facebook.com/v2.10/search', [
-                    'query' => [
-                        'access_token' => Event::getFbToken(),
-                        'type' => 'place',
-                        'center' => "$lat,$lng",
-                        'distance' => $dist
-                    ]
-                ])
-                : $client->request('GET', $next);
-            $resBody = json_decode($res->getBody()->getContents());
+        $resolvePromise = function($promise) {
+            return $promise->then(function($val) use (&$resolvePromise) {
+                if ($val instanceof GuzzleHttp\Promise\Promise)
+                    return $resolvePromise($val);
+                return $val;
+            });
+        };
+
+        $makeRequest = function($url) use ($client, &$makeRequest, &$locations) {
+            return $client->requestAsync('GET', $url)
+                ->then(function($val) use (&$locations, $client, &$makeRequest) {
+                    $resBody = json_decode($val->getBody()->getContents());
+                    $locations = array_values(array_merge($locations, $resBody->data));
+                    $next = isset($resBody->paging->next) ? $resBody->paging->next : '';
+
+                    if (empty($next))
+                        return $locations;
+
+                    return $makeRequest($next);
+                });
+        };
+
+        $promise =
+            $client->requestAsync('GET', 'https://graph.facebook.com/v2.10/search', [
+                'query' => [
+                    'access_token' => Event::getFbToken(),
+                    'type' => 'place',
+                    'center' => "$lat,$lng",
+                    'distance' => $dist
+                ]
+            ]);
+
+        $promise->then(function($val) use (&$locations, $client, &$makeRequest) {
+            $resBody = json_decode($val->getBody()->getContents());
             $locations = array_values(array_merge($locations, $resBody->data));
             $next = isset($resBody->paging->next) ? $resBody->paging->next : '';
-        } while (count($locations) && !empty($next));
+
+            if (empty($next))
+                return $locations;
+
+            return $makeRequest($next);
+        });
+
+        $resolvePromise($promise)
+            ->wait();
 
         $locationIds = collect($locations)->map(function($item) {
             return $item->id;
