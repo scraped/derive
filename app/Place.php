@@ -36,18 +36,26 @@ class Place extends Model
 
         $chunkedIds = $locationIds->chunk(50)->toArray();
 
-        foreach($chunkedIds as $ids) {
-            $res = $client->request('GET', 'https://graph.facebook.com/v2.10/', [
-                'query' => [
-                    'access_token' => static::getFbToken(),
-                    'ids' => implode($ids, ','),
-                    'fields' => implode($locationFields, ','),
-                    'categories' => "['FOOD_BEVERAGE','ARTS_ENTERTAINMENT','FITNESS_RECREATION','SHOPPING_RETAIL']"
-                ]
-            ]);
-            $resBody = (array)json_decode($res->getBody()->getContents());
-            $detailedLocations = array_values(array_merge($detailedLocations, $resBody));
-        }
+        $promises = (function () use ($chunkedIds, $client, $locationFields) {
+            foreach($chunkedIds as $ids) {
+                yield $client->requestAsync('GET', 'https://graph.facebook.com/v2.10/', [
+                    'query' => [
+                        'access_token' => static::getFbToken(),
+                        'ids' => implode($ids, ','),
+                        'fields' => implode($locationFields, ','),
+                        'categories' => "['FOOD_BEVERAGE','ARTS_ENTERTAINMENT','FITNESS_RECREATION','SHOPPING_RETAIL']"
+                    ]
+                ]);
+            }
+        })();
+
+        (new GuzzleHttp\Promise\EachPromise($promises, [
+            'concurrency' => 5,
+            'fulfilled' => function ($res) use (&$detailedLocations) {
+                $resBody = (array)json_decode($res->getBody()->getContents());
+                $detailedLocations = array_values(array_merge($detailedLocations, $resBody));
+            }
+        ]))->promise()->wait();
 
         return $detailedLocations;
     }
