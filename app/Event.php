@@ -103,22 +103,37 @@ class Event extends Model
      */
     public static function search($lat, $lng, $dist, $dateTime = null)
     {
-        $placeIds = Cache::remember("placeIds:$lat,$lng,$dist", 30, function() use ($lat, $lng, $dist) {
-            $placeIds = Place::search($lat, $lng, $dist);
+        $promises = (function() use ($lat, $lng, $dist) {
+            $cached = Cache::get("placeIds:$lat,$lng,$dist");
+            if ($cached) {
+                yield new GuzzleHttp\Promise\FulfilledPromise($cached);
+                return;
+            }
+
+            yield Place::search($lat, $lng, $dist);
 
             // approx. km to lat/lng conversion
             $d2 = ($dist+$dist/2)/111000;
             $d = [0, $d2*.7071, $d2, $d2*.7071, 0, -$d2*.7071, -$d2, -$d2*.7071];
             for ($i = 0; $i < 8; $i++) {
-                $resultIds = Place::search(round($lat + $d[2], 2), round($lng + $d[0], 2), $dist);
-                $placeIds = $placeIds->merge($resultIds);
-                array_push($d, array_shift($d));
+                yield Place::search(round($lat + $d[2], 2), round($lng + $d[0], 2), $dist);
             }
-            return $placeIds;
-        });
+        })();
+
+        $placeIds = [];
+
+        (new GuzzleHttp\Promise\EachPromise($promises, [
+            'concurrency' => 10,
+            'fulfilled' => function($results) use (&$placeIds) {
+                $placeIds = collect(array_merge($placeIds, $results))
+                    ->unique()->toArray();
+            }
+        ]))->promise()->wait();
+
+        Cache::put("placeIds:$lat,$lng,$dist", $placeIds, 30);
 
         $places = Cache::remember("places:$lat,$lng,$dist", 30, function() use ($placeIds) {
-            return Place::getPlaces($placeIds->unique());
+            return Place::getPlaces(collect($placeIds));
         });
 
         $events = [];
@@ -133,6 +148,10 @@ class Event extends Model
                 array_push($events, $event);
             }
         }
+
+        $events = collect($events)
+            ->unique('id')
+            ->toArray();
 
         if ($dateTime != null)
             return static::filterEvents($events, new Carbon($dateTime));

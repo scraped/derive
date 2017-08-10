@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use GuzzleHttp;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -40,9 +39,10 @@ class Place extends Model
         foreach($chunkedIds as $ids) {
             $res = $client->request('GET', 'https://graph.facebook.com/v2.10/', [
                 'query' => [
-                    'access_token' => Event::getFbToken(),
+                    'access_token' => static::getFbToken(),
                     'ids' => implode($ids, ','),
-                    'fields' => implode($locationFields, ',')
+                    'fields' => implode($locationFields, ','),
+                    'categories' => "['FOOD_BEVERAGE','ARTS_ENTERTAINMENT','FITNESS_RECREATION','SHOPPING_RETAIL']"
                 ]
             ]);
             $resBody = (array)json_decode($res->getBody()->getContents());
@@ -62,58 +62,40 @@ class Place extends Model
     public static function search($lat, $lng, $dist)
     {
         $client = new GuzzleHttp\Client();
-        $locations = [];
+        $places = [];
 
-        $resolvePromise = function($promise) {
-            return $promise->then(function($val) use (&$resolvePromise) {
-                if ($val instanceof GuzzleHttp\Promise\Promise)
-                    return $resolvePromise($val);
-                return $val;
-            });
+        $getNextUrl = function($next) use (&$places, $client) {
+            if (empty($next))
+                return null;
+            $resBody = json_decode($next->getBody()->getContents());
+            $places = array_values(array_merge($places, $resBody->data));
+            $next = isset($resBody->paging->next) ? $resBody->paging->next : null;
+            if (empty($next))
+                return null;
+            return $client->requestAsync('GET', $next);
         };
 
-        $makeRequest = function($url) use ($client, &$makeRequest, &$locations) {
-            return $client->requestAsync('GET', $url)
-                ->then(function($val) use (&$locations, $client, &$makeRequest) {
-                    $resBody = json_decode($val->getBody()->getContents());
-                    $locations = array_values(array_merge($locations, $resBody->data));
-                    $next = isset($resBody->paging->next) ? $resBody->paging->next : '';
-
-                    if (empty($next))
-                        return $locations;
-
-                    return $makeRequest($next);
-                });
-        };
-
-        $promise =
-            $client->requestAsync('GET', 'https://graph.facebook.com/v2.10/search', [
+        return $client->requestAsync('GET', 'https://graph.facebook.com/v2.10/search', [
                 'query' => [
                     'access_token' => Event::getFbToken(),
                     'type' => 'place',
                     'center' => "$lat,$lng",
                     'distance' => $dist
                 ]
-            ]);
-
-        $promise->then(function($val) use (&$locations, $client, &$makeRequest) {
-            $resBody = json_decode($val->getBody()->getContents());
-            $locations = array_values(array_merge($locations, $resBody->data));
-            $next = isset($resBody->paging->next) ? $resBody->paging->next : '';
-
-            if (empty($next))
-                return $locations;
-
-            return $makeRequest($next);
-        });
-
-        $resolvePromise($promise)
-            ->wait();
-
-        $locationIds = collect($locations)->map(function($item) {
-            return $item->id;
-        });
-
-        return $locationIds;
+            ])
+            ->then($getNextUrl)
+            ->then($getNextUrl)
+            ->then($getNextUrl)
+            ->then($getNextUrl)
+            ->then($getNextUrl)
+            ->then($getNextUrl)
+            ->then($getNextUrl)
+            ->then($getNextUrl)
+            ->then(function() use (&$places, $lat, $lng, $dist) {
+                $placeIds = collect($places)->map(function($place) {
+                        return $place->id;
+                    })->unique()->toArray();
+                return $placeIds;
+            });
     }
 }
