@@ -6,6 +6,9 @@
                     <a v-on:click="showMap()" class="pull-left">
                         <span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-map-marker"></span>
                     </a>
+                    <a v-on:click="search" class="pull-right">
+                        <span class="glyphicon glyphicon-repeat"></span>
+                    </a>
                 </div>
                 <div class="event card">
                     <input type="hidden" id="event-id" v-bind:value="event.id">
@@ -31,11 +34,6 @@
                             {{ event.place.location.city }}, {{ event.place.location.state }} {{ event.place.location.zip }}
                         </div>
                         <p class="card-text" v-html="event.description"></p>
-                    </div>
-                </div>
-                <div class="form-inline">
-                    <div class="form-group">
-                        <input type="button" class="btn btn-lg btn-primary" value="Reroll" v-on:click="search">
                     </div>
                 </div>
             </div>
